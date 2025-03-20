@@ -1,6 +1,6 @@
 ZSH_NVM_DIR=${0:a:h}
 
-[[ -z "$NVM_DIR" ]] && export NVM_DIR="$HOME/.nvm"
+[[ -z "$NVM_DIR" ]] && export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 
 _zsh_nvm_rename_function() {
   test -n "$(declare -f $1)" || return
@@ -186,6 +186,10 @@ if [[ "$ZSH_NVM_NO_LOAD" != true ]]; then
 
     # Auto use nvm on chpwd
     [[ "$NVM_AUTO_USE" == true ]] && add-zsh-hook chpwd _zsh_nvm_auto_use && _zsh_nvm_auto_use
+
+    # This loads nvm bash_completion
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  
+
   fi
 
 fi
