@@ -2,7 +2,11 @@
 
 > Zsh plugin for installing, updating and loading `nvm`
 
-[`nvm`](https://github.com/creationix/nvm) is an awesome tool but it can be kind of a pain to install and keep up to date. This zsh plugin allows you to quickly setup `nvm` once, save it in your dotfiles, then never worry about it again.
+[![GitHub Donate](https://badgen.net/badge/GitHub/Sponsor/D959A7?icon=github)](https://github.com/sponsors/lukechilds)
+[![Bitcoin Donate](https://badgen.net/badge/Bitcoin/Donate/F19537?icon=bitcoin)](https://lu.ke/tip/bitcoin)
+[![Lightning Donate](https://badgen.net/badge/Lightning/Donate/F6BC41?icon=bitcoin-lightning)](https://lu.ke/tip/lightning)
+
+[`nvm`](https://github.com/nvm-sh/nvm) is an awesome tool but it can be kind of a pain to install and keep up to date. This zsh plugin allows you to quickly setup `nvm` once, save it in your dotfiles, then never worry about it again.
 
 The plugin will install the latest stable release of `nvm` if you don't already have it, and then automatically `source` it for you. You can upgrade `nvm` to the latest version whenever you want without losing your installed `node` versions by running `nvm upgrade`.
 
@@ -39,6 +43,25 @@ Previous HEAD position was 56417f8... v0.31.3
 HEAD is now at 2176894... v0.31.0
 ```
 
+### Install
+
+You can install the latest Node.js nightlies or release candidates with `nvm install nightly|rc`. Aliases will automatically be created so you can easily `nvm use nightly|rc` in the future:
+
+```
+% nvm install rc
+Downloading and installing node v8.0.0-rc.1...
+Downloading https://nodejs.org/download/rc//v8.0.0-rc.1/node-v8.0.0-rc.1-darwin-x64.tar.xz...
+######################################################################## 100.0%
+Computing checksum with shasum -a 256
+Checksums matched!
+Now using node v8.0.0-rc.1 (npm v5.0.0-beta.56)
+rc -> v8.0.0-rc.1
+Clearing mirror cache...
+Done!
+```
+
+> **Note:** This is a bit of a hack and leaving rc|nightly versions installed may break nvm when it eventually supports them itself. It's recommended that you don't leave the these versions of Node.js installed. Install them, test/play with them and then uninstall them when you're done.
+
 ## Options
 
 ### Custom Directory
@@ -53,6 +76,18 @@ antigen bundle lukechilds/zsh-nvm
 ```
 
 Note: If `nvm` doesn't exist in this directory it'll be automatically installed when you start a session.
+
+### Nvm Completion
+
+`nvm` comes with a default bash_completion profile. If you want to enable it, you can do it by exporting  the `NVM_COMPLETION` environment variable and setting it to `true`. It must be set before `zsh-nvm` is loaded.
+
+For example, if you are using antigen, you would put the following in your `.zshrc`:
+
+```bash
+# Export nvm completion settings for zsh-nvm plugin
+export NVM_COMPLETION=true
+antigen bundle lukechilds/zsh-nvm
+```
 
 ### Lazy Loading
 
@@ -75,6 +110,17 @@ Performance comparison:
 
 % time (_zsh_nvm_lazy_load)
 ( _zsh_nvm_lazy_load; )  0.01s user 0.01s system 168% cpu 0.012 total
+```
+
+#### Extra commands to trigger lazy loading
+By default lazy loading nvm is triggered by running the `nvm`, `node`, `npm` commands or any installed npm global binaries.
+If you want to trigger the lazy loading via extra arbitrary commands you can define `NVM_LAZY_LOAD_EXTRA_COMMANDS` and set it to an array of commands as strings.
+This can be usefull if programs are not in the above list of binaries but do depend on the availability of `node`, e.g. a vim plugin.
+
+```shell
+export NVM_LAZY_LOAD_EXTRA_COMMANDS=('vim')
+vim --version
+#node is now loaded
 ```
 
 ### Don't autoload node
